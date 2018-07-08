@@ -62,17 +62,14 @@ public class SolidLineRenderer extends Renderer implements ColorAnimator.ColorAn
     private CMRendererObserver mObserver;
     private ColorAnimator mLavaLamp;
 
-    private PulseController mController;
-
-    public SolidLineRenderer(Context context, Handler handler, PulseObserver callback,
-            PulseController controller) {
+    public SolidLineRenderer(Context context, Handler handler, PulseObserver callback) {
         super(context, handler, callback);
-        mController = controller;
         mColor = Color.TRANSPARENT;
         mLavaLamp = new ColorAnimator();
         mLavaLamp.setColorAnimatorListener(this);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
+        mPaint.setColor(mColor);
         mFadePaint = new Paint();
         mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
         mDbFuzzFactor = 5f;
@@ -277,8 +274,7 @@ public class SolidLineRenderer extends Renderer implements ColorAnimator.ColorAn
                     Color.WHITE,
                     UserHandle.USER_CURRENT);
             if (!mLavaLampEnabled) {
-                int lastColor = mController.getAlbumArtColor();
-                mPaint.setColor(mAutoColor && lastColor != -1 ? lastColor : mColor);
+                mPaint.setColor(mAutoColor && mAlbumColor != -1 ? mAlbumColor : mColor);
             }
             int lavaLampSpeed = Settings.Secure.getIntForUser(resolver,
                     Settings.Secure.PULSE_LAVALAMP_SOLID_SPEED, 10 * 1000,
@@ -321,7 +317,6 @@ public class SolidLineRenderer extends Renderer implements ColorAnimator.ColorAn
         }
         if (mAutoColor && !mLavaLampEnabled) {
             mPaint.setColor(mAlbumColor != 1 ? mAlbumColor : mColor);
-            mController.setLastColor(mAlbumColor);
         }
     }
 }

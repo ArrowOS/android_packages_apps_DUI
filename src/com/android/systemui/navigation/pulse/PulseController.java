@@ -72,7 +72,7 @@ public class PulseController {
     private PulseObserver mPulseObserver;
     private SettingsObserver mSettingsObserver;
     private Bitmap mAlbumArt;
-    private int mAlbumArtColor = -1;
+    private int mAlbumArtColor;
     private boolean mPulseEnabled;
     private boolean mKeyguardShowing;
     private boolean mLinked;
@@ -198,6 +198,7 @@ public class PulseController {
 
         mSettingsObserver.register();
         mStreamHandler = new VisualizerStreamHandler(mContext, this, mStreamListener);
+        mAlbumArtColor = Color.TRANSPARENT;
     }
 
     public void setPulseObserver(PulseObserver observer) {
@@ -305,20 +306,12 @@ public class PulseController {
     private Renderer getRenderer(PulseObserver observer) {
         switch (mPulseStyle) {
             case RENDER_STYLE_LEGACY:
-                return new FadingBlockRenderer(mContext, mHandler, observer, this);
+                return new FadingBlockRenderer(mContext, mHandler, observer);
             case RENDER_STYLE_CM:
-                return new SolidLineRenderer(mContext, mHandler, observer, this);
+                return new SolidLineRenderer(mContext, mHandler, observer);
             default:
-                return new FadingBlockRenderer(mContext, mHandler, observer, this);
+                return new FadingBlockRenderer(mContext, mHandler, observer);
         }
-    }
-
-    public void setLastColor(int color) {
-        mAlbumArtColor = color;
-    }
-
-    public int getAlbumArtColor() {
-        return mAlbumArtColor;
     }
 
     private boolean isMusicMuted(int streamType) {
